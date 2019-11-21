@@ -55,7 +55,7 @@ def about():
     return render_template ('about.html')
 @app.route("/salesgraphs")
 def salesgraphs():
-    return render_template ('soldgraphs/index1.html')
+    return render_template ('index1.html')
 
 @app.route("/searchModels")
 def searchModels():
