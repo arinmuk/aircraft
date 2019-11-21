@@ -12,6 +12,7 @@ from flask_cors import CORS, cross_origin
 
 
 app=Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 CORS(app, support_credentials=True)
 
 def mongo_coll_read():
@@ -45,7 +46,10 @@ def read():
     del res['_id']
     del res1['_id']
     del res2['_id']
-    return jsonify(res.to_dict('records'))
+    res_fix = res[["ID", "MODEL_NO","DIMAID","WID","AIRLINE", "AIRCRAFT_TYPE","REGISTRATION",  "DESCRIPTION",  "SIZE", "PRICE",  "SHIPPING", "TAX",  "COMPANY", "DATEOFORDER",  "ORDEREDFROM", "PictureID",  "HangarClub"]]
+    
+    return jsonify(res_fix.to_dict('records'))
+
 @app.route("/about")
 def about():
     return render_template ('about.html')
