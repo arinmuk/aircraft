@@ -1,4 +1,16 @@
-console.log(data1);
+//console.log(data1);
+
+var yr2019 = {}
+var yr2018 = {}
+var yr2017 = {}
+var yr2016 = {}
+var yr2015 = {}
+var yr2014 = {}
+var yr2013 = {}
+var yr2012 = {}
+var yr2011 = {}
+var data=[]
+var data1=[]
 function year2019(sale) {
         return sale.year == '2019';
       }
@@ -264,13 +276,19 @@ function updatePlotly(newx,newy,loc,surface){
         Plotly.restyle(splot,{"z":[surface]})
 }
 // YOUR CODE HERE
-var yr2019 = data1.filter(year2019)
-var yr2018 = data1.filter(year2018)
-var yr2017 = data1.filter(year2017)
-var yr2016 = data1.filter(year2016)
-var yr2015 = data1.filter(year2015)
-var yr2014 = data1.filter(year2014)
-var yr2013 = data1.filter(year2013)
-var yr2012 = data1.filter(year2012)
-var yr2011 = data1.filter(year2011)
-init()
+urlstring='http://127.0.0.1:5000/readSales'
+
+d3.json(urlstring).then(function(sample_m) {
+        data1=sample_m
+        data=data1
+        yr2019 = data1.filter(year2019)
+        yr2018 = data1.filter(year2018)
+        yr2017 = data1.filter(year2017)
+        yr2016 = data1.filter(year2016)
+        yr2015 = data1.filter(year2015)
+        yr2014 = data1.filter(year2014)
+        yr2013 = data1.filter(year2013)
+        yr2012 = data1.filter(year2012)
+        yr2011 = data1.filter(year2011)
+        init()
+})

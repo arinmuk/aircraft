@@ -1,4 +1,17 @@
 //console.log(data1);
+var yr20192 = {}
+var yr20182= {}
+var yr20172 = {}
+var yr20162 = {}
+var yr20152 = {}
+var yr20142 = {}
+var yr20132 = {}
+var yr20122 = {}
+var yr20112 = {}
+var data=[]
+var data1=[]
+
+
 function year20192(sale) {
         return sale.year == '2019';
       }
@@ -191,13 +204,19 @@ function updatePlotlytwo(newx,newy,loc){
         Plotly.restyle(LINE,"y",[newy])
 }
 // YOUR CODE HERE
-var yr20192 = data1.filter(year20192)
-var yr20182 = data1.filter(year20182)
-var yr20172 = data1.filter(year20172)
-var yr20162 = data1.filter(year20162)
-var yr20152 = data1.filter(year20152)
-var yr20142 = data1.filter(year20142)
-var yr20132 = data1.filter(year20132)
-var yr20122 = data1.filter(year20122)
-var yr20112 = data1.filter(year20112)
-inittwo()
+urlstring='http://127.0.0.1:5000/readSales'
+
+d3.json(urlstring).then(function(sample_m) {
+        data1=sample_m
+        data=data1
+        yr20192 = data1.filter(year20192)
+        yr20182 = data1.filter(year20182)
+        yr20172 = data1.filter(year20172)
+        yr20162 = data1.filter(year20162)
+        yr20152 = data1.filter(year20152)
+        yr20142 = data1.filter(year20142)
+        yr20132 = data1.filter(year20132)
+        yr20122 = data1.filter(year20122)
+        yr20112 = data1.filter(year20112)
+        inittwo()
+})

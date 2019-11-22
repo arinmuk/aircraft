@@ -50,6 +50,30 @@ def read():
     
     return jsonify(res_fix.to_dict('records'))
 
+@app.route("/readSales")
+@cross_origin(supports_credentials=True)
+def read_summarize():
+    res,res1,res2=mongo_coll_read()
+    del res['_id']
+    del res1['_id']
+    del res2['_id']
+    res2= res2.drop(['ID','AircraftID','Buyer','SaleDate'],axis=1)
+    solddf_grp1=res2.groupby(['year','month'],\
+        as_index=False).agg({'Listing price':"sum",'Net Recd':"sum",
+                            'ListingFee':"sum",
+                            'EbayFee':"sum",
+                            'PaypalFee':"sum",
+                            'Shipping':"sum",
+                            'Insurance':"sum",
+                            'NetRecd':"sum",
+                            'price':"sum",
+                            'shipping':"sum",
+                            'tax':"sum",
+                            'profit_loss':"sum"},
+                            )
+    
+    return jsonify(solddf_grp1.to_dict('records'))
+
 @app.route("/about")
 def about():
     return render_template ('about.html')
