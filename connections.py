@@ -2,6 +2,7 @@ import sys
 import pandas as pd
 import pyodbc as pyodbc
 from sqlalchemy.dialects.mssql import pymssql
+from sqlalchemy import create_engine, MetaData, Table, select
 import sqlalchemy
 import pymssql
 import pymongo
@@ -106,7 +107,61 @@ def elastic_update(exportdf,msdf,solddf):
     print(not r["errors"])
 
 
-cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails = cloudM_R()
-del cloudmodelsdf['_id']
-del cloudsoldmodelsdf['_id']
-del cloudsolddetails['_id']
+#cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails = cloudM_R()
+#del cloudmodelsdf['_id']
+#del cloudsoldmodelsdf['_id']
+#del cloudsolddetails['_id']
+
+def sql_update(mongodata,mongosold,mongosales):
+    #mongodata,mongosold,mongosales=cloudM_R()
+    mongodata.head()
+    mongodata.fillna('')
+    mongodata['DIMAID'].fillna('',inplace=True)
+    mongodata['REGISTRATION'].fillna('',inplace=True)
+    mongodata['SHIPPING'].fillna(0,inplace=True)
+    mongodata['PRICE'].fillna(0,inplace=True)
+    mongodata['PictureID'].fillna('',inplace=True)
+    mongosold.fillna('')
+    mongosold['DIMAID'].fillna('',inplace=True)
+    mongosold['REGISTRATION'].fillna('',inplace=True)
+    mongosold['SHIPPING'].fillna(0,inplace=True)
+    mongosold['PRICE'].fillna(0,inplace=True)
+    mongosold['PictureID'].fillna('',inplace=True)
+    connection = pymssql.connect(host='yoga900',
+                             user=sqluser,
+                             password=sqlpass,
+                             database='Aircraft')
+    # Create a new record
+
+    #sql = "INSERT INTO dbo.aircraft (AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION, DIMAID,HangarClub,ID,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO dbo.aircraft (ID,AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION,HangarClub,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,DIMAID,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s)"
+    cursor=connection.cursor()
+    cursor.execute("truncate table aircraft")
+    # Execute the query
+    for idx,data in mongodata.iterrows():
+        cursor.execute(sql, (data["ID"],data["AIRCRAFT_TYPE"],data["AIRLINE"],data["COMPANY"],data["DATEOFORDER"],data["DESCRIPTION"],data["HangarClub"],data["MODEL_NO"],data["ORDEREDFROM"],data["PRICE"],data["PictureID"],data["REGISTRATION"],data["SHIPPING"],data["DIMAID"],data["SIZE"],data["TAX"],data["WID"]))
+
+    # the connection is not autocommited by default. So we must commit to save our changes.
+    connection.commit()
+
+    sql = "INSERT INTO dbo.aircraftsold (ID,AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION,HangarClub,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,DIMAID,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s)"
+    cursor=connection.cursor()
+    cursor.execute("truncate table aircraftsold")
+    # Execute the query
+    for idx,data in mongosold.iterrows():
+        cursor.execute(sql, (data["ID"],data["AIRCRAFT_TYPE"],data["AIRLINE"],data["COMPANY"],data["DATEOFORDER"],data["DESCRIPTION"],data["HangarClub"],data["MODEL_NO"],data["ORDEREDFROM"],data["PRICE"],data["PictureID"],data["REGISTRATION"],data["SHIPPING"],data["DIMAID"],data["SIZE"],data["TAX"],data["WID"]))
+
+    # the connection is not autocommited by default. So we must commit to save our changes.
+    connection.commit()
+    #
+
+    sql = " insert into dbo.SoldDetails(AircraftID,[Listing price],[Net Recd],SaleDate,ListingFee,EbayFee,PaypalFee,Shipping,Insurance,Buyer,NetRecd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    print(sql)
+    cursor=connection.cursor()
+    cursor.execute("truncate table SoldDetails")
+    for idx,data in mongosales.iterrows():
+        cursor.execute(sql, (data["AircraftID"],data["Listing price"],data["Net Recd"],data["SaleDate"],data["ListingFee"],data["EbayFee"],data["PaypalFee"],data["Shipping"],data["Insurance"],data["Buyer"],data["NetRecd"]))
+
+    # the connection is not autocommited by default. So we must commit to save our changes.
+    connection.commit()
+

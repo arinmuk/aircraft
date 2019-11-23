@@ -1,7 +1,7 @@
 from flask import Flask,render_template,jsonify
 import json
 from pymongo import MongoClient 
-from connections import cloudM_R
+from connections import cloudM_R,mongoR_I,elastic_update,sql_update
 from flask_cors import CORS, cross_origin
 #client = MongoClient()
 #client = MongoClient('localhost', 27017)
@@ -77,6 +77,7 @@ def read_summarize():
 @app.route("/about")
 def about():
     return render_template ('about.html')
+
 @app.route("/salesgraphs")
 def salesgraphs():
     return render_template ('index1.html')
@@ -84,7 +85,17 @@ def salesgraphs():
 @app.route("/searchModels")
 def searchModels():
     return render_template('/searchModels.html')
-  
+
+@app.route("/Refresh_Data")
+def DataRefresh():
+    exportdf,msdf,soldf=mongo_coll_read()
+    del exportdf['_id']
+    del msdf['_id']
+    del soldf['_id']
+    mongoR_I(exportdf,msdf,soldf)
+    elastic_update(exportdf,msdf,soldf)
+    sql_update(exportdf,msdf,soldf)
+    return render_template('/home.html')
 
 
 if __name__=='__main__':
