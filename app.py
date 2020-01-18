@@ -47,7 +47,7 @@ def read():
     del res1['_id']
     del res2['_id']
     res_fix = res[["ID", "MODEL_NO","DIMAID","WID","AIRLINE", "AIRCRAFT_TYPE","REGISTRATION",  "DESCRIPTION",  "SIZE", "PRICE",  "SHIPPING", "TAX",  "COMPANY", "DATEOFORDER",  "ORDEREDFROM", "PictureID",  "HangarClub"]]
-    
+    #res_fix=res_fix.sort_values("ID",inplace=True)
     return jsonify(res_fix.to_dict('records'))
 
 @app.route("/readSales")

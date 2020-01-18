@@ -26,7 +26,7 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 es
 
 from sqlalchemy import create_engine, MetaData, Table, select
-connection = pymssql.connect(host='yoga900',user=sqluser, password=sqlpass,database='Aircraft')
+connection = pymssql.connect(host='zbook',user=sqluser, password=sqlpass,database='Aircraft')
 
 # read cloud Mongo Data and return dataframes
 def cloudM_R():
@@ -127,7 +127,7 @@ def sql_update(mongodata,mongosold,mongosales):
     mongosold['SHIPPING'].fillna(0,inplace=True)
     mongosold['PRICE'].fillna(0,inplace=True)
     mongosold['PictureID'].fillna('',inplace=True)
-    connection = pymssql.connect(host='yoga900',
+    connection = pymssql.connect(host='zbook',
                              user=sqluser,
                              password=sqlpass,
                              database='Aircraft')
@@ -136,7 +136,7 @@ def sql_update(mongodata,mongosold,mongosales):
     #sql = "INSERT INTO dbo.aircraft (AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION, DIMAID,HangarClub,ID,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     sql = "INSERT INTO dbo.aircraft (ID,AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION,HangarClub,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,DIMAID,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s)"
     cursor=connection.cursor()
-    cursor.execute("truncate table aircraft")
+    cursor.execute("delete from aircraft")
     # Execute the query
     for idx,data in mongodata.iterrows():
         cursor.execute(sql, (data["ID"],data["AIRCRAFT_TYPE"],data["AIRLINE"],data["COMPANY"],data["DATEOFORDER"],data["DESCRIPTION"],data["HangarClub"],data["MODEL_NO"],data["ORDEREDFROM"],data["PRICE"],data["PictureID"],data["REGISTRATION"],data["SHIPPING"],data["DIMAID"],data["SIZE"],data["TAX"],data["WID"]))
@@ -146,7 +146,7 @@ def sql_update(mongodata,mongosold,mongosales):
 
     sql = "INSERT INTO dbo.aircraftsold (ID,AIRCRAFT_TYPE, AIRLINE, COMPANY, DATEOFORDER, DESCRIPTION,HangarClub,MODEL_NO,ORDEREDFROM,PRICE,PictureID,REGISTRATION,SHIPPING,DIMAID,SIZE,TAX,WID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s)"
     cursor=connection.cursor()
-    cursor.execute("truncate table aircraftsold")
+    cursor.execute("delete from aircraftsold")
     # Execute the query
     for idx,data in mongosold.iterrows():
         cursor.execute(sql, (data["ID"],data["AIRCRAFT_TYPE"],data["AIRLINE"],data["COMPANY"],data["DATEOFORDER"],data["DESCRIPTION"],data["HangarClub"],data["MODEL_NO"],data["ORDEREDFROM"],data["PRICE"],data["PictureID"],data["REGISTRATION"],data["SHIPPING"],data["DIMAID"],data["SIZE"],data["TAX"],data["WID"]))
@@ -155,12 +155,13 @@ def sql_update(mongodata,mongosold,mongosales):
     connection.commit()
     #
 
-    sql = " insert into dbo.SoldDetails(AircraftID,[Listing price],[Net Recd],SaleDate,ListingFee,EbayFee,PaypalFee,Shipping,Insurance,Buyer,NetRecd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    #sql = " insert into dbo.SoldDetails(AircraftID,[Listing price],[Net Recd],SaleDate,ListingFee,EbayFee,PaypalFee,Shipping,Insurance,Buyer,NetRecd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = " insert into dbo.SoldDetails(ID,AircraftID,[Listing price],[Net Recd],SaleDate,ListingFee,EbayFee,PaypalFee,Shipping,Insurance,Buyer,NetRecd) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     print(sql)
     cursor=connection.cursor()
-    cursor.execute("truncate table SoldDetails")
+    cursor.execute("delete from SoldDetails")
     for idx,data in mongosales.iterrows():
-        cursor.execute(sql, (data["AircraftID"],data["Listing price"],data["Net Recd"],data["SaleDate"],data["ListingFee"],data["EbayFee"],data["PaypalFee"],data["Shipping"],data["Insurance"],data["Buyer"],data["NetRecd"]))
+        cursor.execute(sql, (data["ID"],data["AircraftID"],data["Listing price"],data["Net Recd"],data["SaleDate"],data["ListingFee"],data["EbayFee"],data["PaypalFee"],data["Shipping"],data["Insurance"],data["Buyer"],data["NetRecd"]))
 
     # the connection is not autocommited by default. So we must commit to save our changes.
     connection.commit()
