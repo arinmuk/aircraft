@@ -36,7 +36,7 @@ def cloudM_R():
     colmodels3=db['modelsold']
     colmodels4=db['solddetails']
     
-    modelsdf = pd.DataFrame(list(colmodels.find()))
+    modelsdf = pd.DataFrame(list(colmodels.find().sort([('ID', 1)])))
     modelsolddf = pd.DataFrame(list(colmodels3.find()))
     solddetailsdf = pd.DataFrame(list(colmodels4.find()))
     #modelsdf = pd.DataFrame(list(colmodels.find()))
