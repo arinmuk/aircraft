@@ -82,9 +82,9 @@ def about():
 def salesgraphs():
     return render_template ('index1.html')
 
-@app.route("/searchModels")
+@app.route("/MsearchModels")
 def searchModels():
-    return render_template('/searchModels.html')
+    return render_template('/MsearchModels.html')
 
 @app.route("/Refresh_Data")
 def DataRefresh():
