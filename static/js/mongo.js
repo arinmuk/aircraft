@@ -106,18 +106,18 @@ function populatecompany(data){
         cell.text(COMPANY)
     })
 }
-urlstring='http://127.0.0.1:9200/aircraft/_search/?size=8000'
+urlstring='http://127.0.0.1:5000/readAircraft'
 
 d3.json(urlstring).then(function(sample_m) {
   var objsample=sample_m
   //console.log(objsample)
-  aircraft=objsample.hits.hits
+  aircraft=objsample//.hits.hits
   // objsample.forEach(element=>{
   //   console.log(element)
   // })
 console.log(aircraft)
 aircraft.forEach(element => {
-  aircraftfull.push(element["_source"])
+  aircraftfull.push(element)//["_source"])
   
 });
 
