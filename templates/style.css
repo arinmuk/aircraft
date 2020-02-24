@@ -74,13 +74,13 @@ select {
 }
 
 #table-area th {
-  text-align: center;
+  text-align: left;
 }
 
 #table-area th:first-child,
 #table-area th:nth-child(2),
 #table-area th:nth-child(6) {
-  min-width: 70px;
+  min-width: 40px;
 }
 
 .loader {
@@ -171,6 +171,7 @@ select {
 
   #table-area td {
     font-size: 1.25em;
+    padding: 1px 1px;
   }
 
   #table-area tbody td {

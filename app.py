@@ -1,7 +1,7 @@
 from flask import Flask,render_template,jsonify
 import json
 from pymongo import MongoClient 
-from connections import cloudM_R,mongoR_I,elastic_update,sql_update
+from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud
 from flask_cors import CORS, cross_origin
 #client = MongoClient()
 #client = MongoClient('localhost', 27017)
@@ -38,6 +38,14 @@ def mongo_coll_read():
 @app.route("/")
 def home():
     return render_template('home.html')
+
+#/Load_Cloud_Data
+@app.route("/Load_Cloud_Data")
+@cross_origin(supports_credentials=True)
+def loadcloud():
+    sqldf,solddf,modelsolddf = sqlread()
+    mongocloud(sqldf,solddf,modelsolddf)
+    return render_template('/home.html')
 
 @app.route("/readAircraft")
 @cross_origin(supports_credentials=True)

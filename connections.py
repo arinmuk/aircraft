@@ -8,7 +8,7 @@ import pymssql
 import pymongo
 import csv
 import json
-from config import cloudM,cloudMpassword,sqluser,sqlpass
+from config import cloudM,cloudMpassword,sqluser,sqlpass,servername
 from pymongo import MongoClient
 from flask import Flask, jsonify, render_template
 from elasticsearch import Elasticsearch
@@ -27,6 +27,59 @@ es
 
 from sqlalchemy import create_engine, MetaData, Table, select
 connection = pymssql.connect(host='zbook',user=sqluser, password=sqlpass,database='Aircraft')
+
+def sqlread():
+    conn = pymssql.connect(server=servername, user=sqluser, password=sqlpass, database='aircraft') 
+    cursor = conn.cursor()
+    qry='SELECT * from aircraft'
+    salesmasterqry='select ID, MODEL_NO, DIMAID, WID, AIRLINE, AIRCRAFT_TYPE, REGISTRATION, DESCRIPTION, SIZE, PRICE, SHIPPING, TAX, COMPANY, ORDEREDFROM, DATEOFORDER,  HangarClub,  PictureID from aircraftsold'
+    salesqry='select s.*,a.price,a.shipping,a.tax from solddetails s inner join aircraftsold a on s.aircraftid=a.id '
+    cursor.execute('SELECT * from aircraft')
+    cursor.execute(salesqry)
+    row = cursor.fetchone()  
+    #while row:  
+            #print(row)
+            #row = cursor.fetchone()  
+    sqldf=pd.read_sql(qry,conn)
+    solddf=pd.read_sql(salesqry,conn)
+    modelsolddf=pd.read_sql(salesmasterqry,conn)
+    
+    
+    solddf["profit_loss"]=solddf["NetRecd"]-(solddf["price"]+solddf["shipping"]+solddf["tax"])
+    solddf["Sale_Date"]=pd.to_datetime(solddf["SaleDate"])
+    solddf["month"]=solddf['SaleDate'].dt.month
+    solddf["year"]=solddf['SaleDate'].dt.year
+    
+    #solddf.set_index("SaleDate",inplace=True)
+    
+    sqldf.columns
+    calcdf = sqldf.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2',
+       'Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
+    exportdf=sqldf.drop(['PICTURE', 'Picture2',
+       'Picture3', 'Rare', 'MarketValue'], axis =1)
+
+    return exportdf,solddf,modelsolddf
+
+def mongocloud(exportdf,slddf,mssolddf):
+    db=cloudMClnt['Aircraft']
+    colmodelscloud=db['models']
+    colmodels2cloud=db['models2']
+    colsale2cloud=db['solddetails']
+    colmssoldcloud=db['modelsold']
+    cursor = colmodelscloud.find() 
+#for record in cursor: 
+    colmodelscloud.drop()
+    colsale2cloud.drop()
+    colmodels2cloud.drop()
+    colmssoldcloud.drop()
+    #records = json.loads(exportdf.to_json(orient='records'))
+    #records = json.loads(exportdf.T.to_json()).values()
+    #db.models.insert_many(records)
+    #db.insert_many(df.to_dict('records'))
+    db.models.insert_many(exportdf.to_dict('records'))
+    db.models2.insert_many(exportdf.to_dict('records'))
+    db.solddetails.insert_many(slddf.to_dict('records'))
+    db.modelsold.insert_many(mssolddf.to_dict('records'))
 
 # read cloud Mongo Data and return dataframes
 def cloudM_R():

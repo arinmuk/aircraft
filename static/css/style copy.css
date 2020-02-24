@@ -74,12 +74,11 @@ select {
 }
 
 #table-area th {
-  text-align: left;
-  padding:0;
+  text-align: center;
 }
 
 #table-area th:first-child,
-#table-area th:nth-child(1),
+#table-area th:nth-child(2),
 #table-area th:nth-child(6) {
   min-width: 70px;
 }
@@ -149,14 +148,12 @@ select {
 @media (max-width: 500px) {
   #table-area thead {
     display: none;
-    
   }
 
   #table-area tr td:first-child {
     font-size: 1.8em;
     font-weight: bold;
-    background: #065096;
-    text-align: center;
+    background: #1b3146;
   }
 
   #table-area tr td:last-child {
@@ -174,7 +171,6 @@ select {
 
   #table-area td {
     font-size: 1.25em;
-    
   }
 
   #table-area tbody td {
