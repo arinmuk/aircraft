@@ -1,7 +1,8 @@
-from flask import Flask,render_template,jsonify
+from flask import Flask,render_template,jsonify,request
 import json
 from pymongo import MongoClient 
 from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud
+from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R
 from flask_cors import CORS, cross_origin
 #client = MongoClient()
 #client = MongoClient('localhost', 27017)
@@ -108,6 +109,105 @@ def DataRefresh():
     sql_update(exportdf,msdf,soldf)
     return render_template('/home.html')
 
+
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++search code
+def readdata():
+    alldatadf,allsolddetdf,allsoldtrans=cloudM_R()
+    return alldatadf
+
+
+@app.route("/send", methods=["GET", "POST"])
+def sendairline():
+    
+    print(request.method)
+    
+    if request.method == "POST":
+          nickname = request.form["airline"]
+          print("apple")
+          print(nickname) 
+          airecords_df=SearchAirline_cloudM_R(nickname)
+      #    res_fix = airecords_df[["ID", "MODEL_NO","DIMAID","WID","AIRLINE", "AIRCRAFT_TYPE","REGISTRATION",  "DESCRIPTION",  "SIZE", "PRICE",  "SHIPPING", "TAX",  "COMPANY", "DATEOFORDER",  "ORDEREDFROM", "PictureID",  "HangarClub"]]
+      #  return jsonify(res_fix.to_dict('records'))
+          columnslst=airecords_df.columns
+          print(columnslst)
+          if columnslst[0]=="_id":
+                    del airecords_df['_id']
+          
+          filterdata_dict=airecords_df.to_dict('records')
+          UAirdf=DistinctAirline_cloudM_R()
+          UAirdf.rename(columns={0:"Airline"},inplace=True)
+          data_dict = UAirdf.to_dict('records')
+          print(data_dict)
+          labelval=nickname
+    return render_template("formsearch.html",data = data_dict,alldata=filterdata_dict,airlinename=labelval)
+
+@app.route("/uniqueAirlines")
+def retrieveairline():
+    
+    UAirdf=DistinctAirline_cloudM_R()
+    UAirdf.rename(columns={0:"Airline"},inplace=True)
+    tempdata=jsonify(UAirdf.to_dict('records'))
+    alldatadf=readdata()
+    del alldatadf['_id']
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    data_dict = UAirdf.to_dict('records')
+    alldata_dict=alldatadf.to_dict('records')
+    return render_template("formsearch.html", data = data_dict, alldata=alldata_dict)
+
+
+
+
+#++++++++++++++++++++++++++
+
+@app.route("/sendReg", methods=["GET", "POST"])
+def sendreg():
+    
+    print(request.method)
+    
+    if request.method == "POST":
+          nickname = request.form["registration"]
+          print("apple")
+          print(nickname) 
+          airecords_df=SearchRegistration_cloudM_R(nickname)
+      #    res_fix = airecords_df[["ID", "MODEL_NO","DIMAID","WID","AIRLINE", "AIRCRAFT_TYPE","REGISTRATION",  "DESCRIPTION",  "SIZE", "PRICE",  "SHIPPING", "TAX",  "COMPANY", "DATEOFORDER",  "ORDEREDFROM", "PictureID",  "HangarClub"]]
+      #  return jsonify(res_fix.to_dict('records'))
+          columnslst=airecords_df.columns
+          print(columnslst)
+          if columnslst[0]=="_id":
+                    del airecords_df['_id']
+          
+          filterdata_dict=airecords_df.to_dict('records')
+          UAirdf=DistinctRegistration_cloudM_R()
+          UAirdf.rename(columns={0:"Registration"},inplace=True)
+          data_dict = UAirdf.to_dict('records')
+          print(data_dict)
+          labelval=nickname
+    return render_template("frmsearchreg.html",data = data_dict,alldata=filterdata_dict,airlinename=labelval)
+
+@app.route("/uniqueReg")
+def retrieve_reg():
+    
+    UAirdf=DistinctRegistration_cloudM_R()
+    UAirdf.rename(columns={0:"Registration"},inplace=True)
+    tempdata=jsonify(UAirdf.to_dict('records'))
+    alldatadf=readdata()
+    del alldatadf['_id']
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    data_dict = UAirdf.to_dict('records')
+    alldata_dict=alldatadf.to_dict('records')
+    return render_template("frmsearchreg.html", data = data_dict, alldata=alldata_dict)
+
+
+
+
+
+
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 if __name__=='__main__':
     app.run(debug=True)

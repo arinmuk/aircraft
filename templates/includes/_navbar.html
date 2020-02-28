@@ -1,4 +1,6 @@
+<link rel="stylesheet" href="static/css/style.css">
 <nav class="navbar navbar-default">
+ 
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -14,8 +16,18 @@
             <li><a href="/">Home</a></li>
             <li><a href="/Load_Cloud_Data">Load Data to Cloud</a></li>
             <li><a href="/Refresh_Data">Refresh Local DataStore</a></li>
-            <li><a href="/MsearchModels">Mongo Search Models</a></li>
-			<li><a href="/EsearchModels">Elastic Search Models</a></li>
+            <li><a href="/MsearchModels">Mongo Search</a></li>
+			      <li><a href="/EsearchModels">Elastic Search</a></li>
+            
+            <li>
+            <div class="dropdown">
+              <button class="dropbtn">General Search for Models</button>
+              <div class="dropdown-content">
+              <a href="/uniqueAirlines">by Airline</a>
+              <a href="/uniqueReg">by Registraion</a>
+              </div>
+           </div>
+           </li>
             <li><a href="/salesgraphs">Salesgraphs</a></li>
             <li><a href="/about">About</a></li>
           </ul>
@@ -24,3 +36,4 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+
