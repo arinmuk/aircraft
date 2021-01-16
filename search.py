@@ -26,7 +26,7 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 es
 
 from sqlalchemy import create_engine, MetaData, Table, select
-connection = pymssql.connect(host='zbook',user=sqluser, password=sqlpass,database='Aircraft')
+connection = pymssql.connect(host='Zbook',user=sqluser, password=sqlpass,database='Aircraft')
 
 # read cloud Mongo Data and return dataframes
 
