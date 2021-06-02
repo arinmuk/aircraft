@@ -65,7 +65,7 @@ function inittwo(){
         var trace1={x:yr20202.map(row=>row.month),
                 y:yr20202.map(row=>row.NetRecd),
                 name:"2020",
-                 type:"scatter"
+                 type:"bar"
       }
         var trace2={x:yr20192.map(row=>row.month),
                    y:yr20192.map(row=>row.NetRecd),

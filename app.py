@@ -91,6 +91,32 @@ def about():
 def salesgraphs():
     return render_template ('index1.html')
 
+@app.route("/summarizecnt")
+@cross_origin(supports_credentials=True)
+def sum_model_cnt():
+        aircraftdf,res1,res2=mongo_coll_read()
+        
+        
+        air_grp = aircraftdf.groupby(['AIRLINE']).ID.count()
+        airgrp=aircraftdf.groupby(['AIRLINE'],as_index=False).agg({"ID":"count"}).rename(columns={'ID':'Count'})
+        airgrp=airgrp.sort_values(['Count'],ascending=False)
+        top10airgrp=airgrp.head(30)
+        return jsonify(top10airgrp.to_dict('records'))
+    
+
+
+@app.route("/airlineDash")
+def dashgraphs():
+
+    
+    
+    
+    return render_template ('airlinedashboard.html')
+
+
+
+
+
 @app.route("/MsearchModels")
 def searchModels():
     return render_template('/MsearchModels.html')
