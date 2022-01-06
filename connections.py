@@ -35,16 +35,19 @@ def sqlread():
     qry='SELECT * from aircraft'
     salesmasterqry='select ID, MODEL_NO, DIMAID, WID, AIRLINE, AIRCRAFT_TYPE, REGISTRATION, DESCRIPTION, SIZE, PRICE, SHIPPING, TAX, COMPANY, ORDEREDFROM, DATEOFORDER,  HangarClub,  PictureID from aircraftsold'
     salesqry='select s.*,a.price,a.shipping,a.tax from solddetails s inner join aircraftsold a on s.aircraftid=a.id '
-    cursor.execute('SELECT * from aircraft')
-    cursor.execute(salesqry)
-    row = cursor.fetchone()  
+    airsccntqry='select * FROM airline_scale_cnt'
+    airsccostqry=  'select * FROM Airline_scale_cost'          
+    ###cursor.execute('SELECT * from aircraft')
+    ###cursor.execute(salesqry)
+    ###row = cursor.fetchone()  
     #while row:  
             #print(row)
             #row = cursor.fetchone()  
     sqldf=pd.read_sql(qry,conn)
     solddf=pd.read_sql(salesqry,conn)
     modelsolddf=pd.read_sql(salesmasterqry,conn)
-    
+    airsc_cntdf=pd.read_sql(airsccntqry,conn)
+    airsc_costdf=pd.read_sql(airsccostqry,conn)
     
     solddf["profit_loss"]=solddf["NetRecd"]-(solddf["price"]+solddf["shipping"]+solddf["tax"])
     solddf["Sale_Date"]=pd.to_datetime(solddf["SaleDate"])
@@ -53,26 +56,31 @@ def sqlread():
     
     #solddf.set_index("SaleDate",inplace=True)
     
-    sqldf.columns
+    #sqldf.columns
     calcdf = sqldf.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2',
        'Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
     exportdf=sqldf.drop(['PICTURE', 'Picture2',
        'Picture3', 'Rare', 'MarketValue'], axis =1)
 
-    return exportdf,solddf,modelsolddf
+    return exportdf,solddf,modelsolddf,airsc_cntdf,airsc_costdf
 
-def mongocloud(exportdf,slddf,mssolddf):
+def mongocloud(exportdf,slddf,mssolddf,airsccntdf,airsccostdf):
     db=cloudMClnt['Aircraft']
     colmodelscloud=db['models']
     colmodels2cloud=db['models2']
     colsale2cloud=db['solddetails']
     colmssoldcloud=db['modelsold']
+    colair_sc_cnt=db['air_scale_cnt']
+    colair_sc_cost=db['air_scale_cost']
     cursor = colmodelscloud.find() 
 #for record in cursor: 
     colmodelscloud.drop()
     colsale2cloud.drop()
     colmodels2cloud.drop()
     colmssoldcloud.drop()
+    colair_sc_cnt.drop()
+    colair_sc_cost.drop()
+    
     #records = json.loads(exportdf.to_json(orient='records'))
     #records = json.loads(exportdf.T.to_json()).values()
     #db.models.insert_many(records)
@@ -81,7 +89,9 @@ def mongocloud(exportdf,slddf,mssolddf):
     db.models2.insert_many(exportdf.to_dict('records'))
     db.solddetails.insert_many(slddf.to_dict('records'))
     db.modelsold.insert_many(mssolddf.to_dict('records'))
-
+    db.air_scale_cnt.insert_many(airsccntdf.to_dict('records'))
+    db.air_scale_cost.insert_many(airsccostdf.to_dict('records'))
+    
 # read cloud Mongo Data and return dataframes
 def cloudM_R():
     db=cloudMClnt['Aircraft']
@@ -98,12 +108,14 @@ def cloudM_R():
 
 
 #insert data into local mongo
-def mongoR_I(exportdf,msdf,soldf):
+def mongoR_I(exportdf,msdf,soldf,airsc_cntdf,airsc_costdf):
     db=client['Aircraft']
     colmodels=db['models']
     colmodels2=db['models2']
     colmodelsales=db['modelsold']
     colsales=db['sales']
+    colair_sc_cnt=db['air_scale_cnt']
+    colair_sc_cost=db['air_scale_cost']
     cursor = colmodels.find() 
 #for record in cursor: 
     colmodels.drop()
@@ -111,6 +123,10 @@ def mongoR_I(exportdf,msdf,soldf):
     colmodels2.drop()
     colmodelsales.drop()
     colsales.drop()
+    
+     ###colair_sc_cnt.drop()
+    ###colair_sc_cost.drop()
+    
     #records = json.loads(exportdf.to_json(orient='records'))
     #records = json.loads(exportdf.T.to_json()).values()
     #db.models.insert_many(records)
@@ -119,7 +135,8 @@ def mongoR_I(exportdf,msdf,soldf):
     db.models2.insert_many(exportdf.to_dict('records'))
     db.modelsold.insert_many(msdf.to_dict('records'))
     db.sales.insert_many(soldf.to_dict('records'))
-
+    db.air_scale_cnt.insert_many(airsc_cntdf.to_dict('records'))
+    db.air_scale_cost.insert_many(airsc_costdf.to_dict('records'))
 
 
 ###Update local elastic data cache

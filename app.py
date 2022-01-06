@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud
 from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R
 from flask_cors import CORS, cross_origin
+from dash_data import collection_summary
 #client = MongoClient()
 #client = MongoClient('localhost', 27017)
 #db=client['Aircraft']
@@ -44,8 +45,8 @@ def home():
 @app.route("/Load_Cloud_Data")
 @cross_origin(supports_credentials=True)
 def loadcloud():
-    sqldf,solddf,modelsolddf = sqlread()
-    mongocloud(sqldf,solddf,modelsolddf)
+    sqldf,solddf,modelsolddf,airsc_cntdf,airsc_costdf = sqlread()
+    mongocloud(sqldf,solddf,modelsolddf,airsc_cntdf,airsc_costdf)
     return render_template('/home.html')
 
 @app.route("/readAircraft")
@@ -107,11 +108,12 @@ def sum_model_cnt():
 
 @app.route("/airlineDash")
 def dashgraphs():
-
+   netcount_costdf,netcount_spl_costdf =collection_summary()
     
     
     
-    return render_template ('airlinedashboard.html')
+   return jsonify(netcount_spl_costdf.to_dict('records'))
+#render_template ('airlinedashboard.html')
 
 
 
@@ -225,13 +227,43 @@ def retrieve_reg():
     data_dict = UAirdf.to_dict('records')
     alldata_dict=alldatadf.to_dict('records')
     return render_template("frmsearchreg.html", data = data_dict, alldata=alldata_dict)
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
+@app.route("/dash_pane1")
+def dash_pane1():
+    
+    
+    panedf,panedf2=collection_summary()
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    panedf_dict = panedf.to_dict('records')
+    panedf2_dict=panedf2.to_dict('records')
+    return render_template("home.html", data = panedf_dict, alldata=panedf2_dict)
 
+@app.route("/dash_pane2")
+def dash_pane2():
+    
+    
+    panedf,panedf2=collection_summary()
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    #panedf_dict = panedf.to_dict('records')
+    panedf2_dict=panedf2.to_dict('records')
+    return jsonify(panedf.to_dict('records'))
 
-
-
-
-
+@app.route("/dash_pane3")
+def dash_pane3():
+    
+    
+    panedf,panedf2=collection_summary()
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    panedf_dict = panedf.to_dict('records')
+    panedf2_dict=panedf2.to_dict('records')
+    return jsonify(panedf2.to_dict('records'))
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

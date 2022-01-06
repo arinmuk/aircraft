@@ -5,16 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <title>Model Sales (Profit)</title>
+    <title>Top 30 Airlines In Collection</title>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+         #container {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        
+        }
+      </style> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
         {% block body %}
         {% include 'includes/_navbar.html' %}
 
+        
+        
+        
+        <div class="row">
+          
+            <div class="col-md-6">
+            <div style="height:400px;width:600px" class="container">
+                <div id="container"></div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div style="height:400px;width:600px" class="container">
+            <div id="plot3"></div>
+        </div>
+    </div>
+
+        </div>
+
+
+
+    
+    
+        
         <div class="row">
         
             <div class="col-md-6">
@@ -26,21 +58,20 @@
     
     
         </div>
-        <div class="row">
-            
-                <div class="col-md-6">
-                        <div id="plot3"></div>
-                  </div>
-                  <div class="col-md-6">
-                        <div id="plot4"></div>
-                </div> 
         
         
-            </div>
             
         <!--<script src="{{url_for('static',filename='js/data1.js')}}"></script>!-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-cartesian-3d.min.js"></script>
+        <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+        <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
         <script src="{{url_for('static',filename='js/sum_canvas_bar.js')}}"></script>
 
 
