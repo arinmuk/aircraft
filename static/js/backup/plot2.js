@@ -61,66 +61,65 @@ var loc =0
 function inittwo(){
 
         //console.log(yr2019)
-
-        var trace11={x:yr20222.map(row=>row.month),
+        var trace={x:yr20222.map(row=>row.month),
                 y:yr20222.map(row=>row.NetRecd),
                 name:"2022",
                  type:"scatter"
-      }       
-        var trace={x:yr20212.map(row=>row.month),
+        }
+        var trace1={x:yr20212.map(row=>row.month),
                 y:yr20212.map(row=>row.NetRecd),
                 name:"2021",
                  type:"bar"
       }
-        var trace1={x:yr20202.map(row=>row.month),
+        var trace2={x:yr20202.map(row=>row.month),
                 y:yr20202.map(row=>row.NetRecd),
                 name:"2020",
                  type:"bar"
       }
-        var trace2={x:yr20192.map(row=>row.month),
+        var trace3={x:yr20192.map(row=>row.month),
                    y:yr20192.map(row=>row.NetRecd),
                    name:"2019",
                     type:"bar"
          }
-        var trace3={x:yr20182.map(row=>row.month),
+        var trace4={x:yr20182.map(row=>row.month),
                 y:yr20182.map(row=>row.NetRecd),
                 name:"2018",
                  type:"bar"
         }
         
-         var trace4={x:yr20172.map(row=>row.month),
+         var trace5={x:yr20172.map(row=>row.month),
                 y:yr20172.map(row=>row.NetRecd),
                 name:"2017",
                  type:"bar"
                 
          }
-         var trace5={x:yr20162.map(row=>row.month),
+         var trace6={x:yr20162.map(row=>row.month),
                 y:yr20162.map(row=>row.NetRecd),
                 name:"2016",
                  type:"bar"
         }
 
-         var trace6={x: yr20152.map(row=>row.month),
+         var trace7={x: yr20152.map(row=>row.month),
                      y: yr20152.map(row=>row.NetRecd),
                         name:"2015",
                          type:"bar"
         }
-        var trace7={x: yr20142.map(row=>row.month),
+        var trace8={x: yr20142.map(row=>row.month),
                 y: yr20142.map(row=>row.NetRecd),
                    name:"2014",
                     type:"bar"
    }
-        var trace8={x: yr20132.map(row=>row.month),
+        var trace9={x: yr20132.map(row=>row.month),
                 y: yr20132.map(row=>row.NetRecd),
                 name:"2013",
                 type:"bar"
 }    
-var trace9={x: yr20122.map(row=>row.month),
+var trace10={x: yr20122.map(row=>row.month),
         y: yr20122.map(row=>row.NetRecd),
         name:"2012",
         type:"bar"
 } 
-var trace10={x: yr20112.map(row=>row.month),
+var trace11={x: yr20112.map(row=>row.month),
         y: yr20112.map(row=>row.NetRecd),
         name:"2011",
         type:"scatter"
@@ -156,68 +155,66 @@ function getData2(dataset){
  switch (dataset){
         case "All":
          init()
-         break;
-
+         break
          case "2022":
          x=yr20222.map(row=>row.month),
          y=yr20222.map(row=>row.NetRecd)
-         loc=11
+         loc=0
          break;
-
          case "2021":
          x=yr20212.map(row=>row.month),
          y=yr20212.map(row=>row.NetRecd)
-         loc=0
+         loc=1
          break;
          case "2020":
          x=yr20202.map(row=>row.month),
          y=yr20202.map(row=>row.NetRecd)
-         loc=1
+         loc=2
          break;
         case "2019":
          x=yr20192.map(row=>row.month),
          y=yr20192.map(row=>row.NetRecd)
-         loc=2
+         loc=3
          break;
         case "2018":
          x=yr20182.map(row=>row.month),
          y=yr20182.map(row=>row.NetRecd)
-         loc=3
+         loc=4
                         break;
         case "2017":
           x=yr20172.map(row=>row.month),
           y=yr20172.map(row=>row.NetRecd)
-          loc=4
+          loc=5
                         break;
         case "2016":
            x=yr20162.map(row=>row.month),
            y=yr20162.map(row=>row.NetRecd)
-           loc=5
+           loc=6
                          break; 
         case "2015":
          x=yr20152.map(row=>row.month),
          y=yr20152.map(row=>row.NetRecd)
-         loc=6
+         loc=7
                 break;                                                                                                                     
         case "2014":
           x=yr20142.map(row=>row.month),
           y=yr20142.map(row=>row.NetRecd)
-         loc=7
+         loc=8
         break;
         case "2013":
          x=yr20132.map(row=>row.month),
          y=yr20132.map(row=>row.NetRecd)
-         loc=8
+         loc=9
          break;              
          case "2012":
          x=yr20122.map(row=>row.month),
          y=yr20122.map(row=>row.NetRecd)
-         loc=9
+         loc=10
          break; 
          case "2011":
                         x=yr20112.map(row=>row.month),
                         y=yr20112.map(row=>row.NetRecd)
-                        loc=10
+                        loc=11
                         break;                
 
         default:
@@ -248,12 +245,12 @@ function updatePlotlytwo(newx,newy,loc){
         Plotly.restyle(LINE,"y",[newy])
 }
 // YOUR CODE HERE
-urlstring='https://aircraft-apis.herokuapp.com/readSales'
-//your code
+urlstring='http://127.0.0.1:5000/readSales'
+
 d3.json(urlstring).then(function(sample_m) {
         data1=sample_m
         data=data1
-        yr20222 = data1.filter(year20222)       
+        yr20222 = data1.filter(year20222)
         yr20212 = data1.filter(year20212)
         yr20202 = data1.filter(year20202)
         yr20192 = data1.filter(year20192)

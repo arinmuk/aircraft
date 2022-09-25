@@ -14,7 +14,7 @@ from flask import Flask, jsonify, render_template
 from elasticsearch import Elasticsearch
 
 #local mongo install
-client = MongoClient()
+#client = MongoClient()
 client = MongoClient('localhost', 27017)
 
 #cloud mongo connect
@@ -99,12 +99,16 @@ def cloudM_R():
     colmodels2=db['models2']
     colmodels3=db['modelsold']
     colmodels4=db['solddetails']
-    
+    colair_sc_cnt=db['air_scale_cnt']
+    colair_sc_cost=db['air_scale_cost']
     modelsdf = pd.DataFrame(list(colmodels.find().sort([('ID', 1)])))
     modelsolddf = pd.DataFrame(list(colmodels3.find()))
     solddetailsdf = pd.DataFrame(list(colmodels4.find()))
+    colair_sc_cntdf = pd.DataFrame(list(colair_sc_cnt.find()))
+    colair_sc_costdf = pd.DataFrame(list(colair_sc_cost.find()))
+    
     #modelsdf = pd.DataFrame(list(colmodels.find()))
-    return modelsdf,modelsolddf,solddetailsdf
+    return modelsdf,modelsolddf,solddetailsdf,colair_sc_cntdf,colair_sc_costdf
 
 
 #insert data into local mongo
@@ -116,13 +120,15 @@ def mongoR_I(exportdf,msdf,soldf,airsc_cntdf,airsc_costdf):
     colsales=db['sales']
     colair_sc_cnt=db['air_scale_cnt']
     colair_sc_cost=db['air_scale_cost']
-    cursor = colmodels.find() 
+    #cursor = colmodels.find() 
 #for record in cursor: 
     colmodels.drop()
     
     colmodels2.drop()
     colmodelsales.drop()
     colsales.drop()
+    colair_sc_cnt.drop()
+    colair_sc_cost.drop()
     
      ###colair_sc_cnt.drop()
     ###colair_sc_cost.drop()

@@ -106,7 +106,7 @@ function populatecompany(data){
         cell.text(COMPANY)
     })
 }
-urlstring='http://127.0.0.1:9200/aircraft/_search/?size=9400'
+urlstring='http://127.0.0.1:9200/aircraft/_search/?size=9900'
 
 d3.json(urlstring).then(function(sample_m) {
   var objsample=sample_m

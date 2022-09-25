@@ -18,7 +18,7 @@ app.config['JSON_SORT_KEYS'] = False
 CORS(app, support_credentials=True)
 
 def mongo_coll_read():
-    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails = cloudM_R()
+    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost = cloudM_R()
     cloudmodelsdf.fillna('')
     cloudmodelsdf['DIMAID'].fillna('',inplace=True)
     cloudmodelsdf['REGISTRATION'].fillna('',inplace=True)
@@ -32,7 +32,7 @@ def mongo_coll_read():
     cloudmodelsdf['PRICE'].fillna(0,inplace=True)
     cloudmodelsdf['PictureID'].fillna('',inplace=True)
      #print(cursor)
-    return cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails#'Home21 -read'
+    return cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost#'Home21 -read'
 
 
 
@@ -52,7 +52,7 @@ def loadcloud():
 @app.route("/readAircraft")
 @cross_origin(supports_credentials=True)
 def read():
-    res,res1,res2=mongo_coll_read()
+    res,res1,res2,res3,res4=mongo_coll_read()
     del res['_id']
     del res1['_id']
     del res2['_id']
@@ -63,7 +63,7 @@ def read():
 @app.route("/readSales")
 @cross_origin(supports_credentials=True)
 def read_summarize():
-    res,res1,res2=mongo_coll_read()
+    res,res1,res2,res3,res4=mongo_coll_read()
     del res['_id']
     del res1['_id']
     del res2['_id']
@@ -95,7 +95,7 @@ def salesgraphs():
 @app.route("/summarizecnt")
 @cross_origin(supports_credentials=True)
 def sum_model_cnt():
-        aircraftdf,res1,res2=mongo_coll_read()
+        aircraftdf,res1,res2,res3,res4=mongo_coll_read()
         
         
         air_grp = aircraftdf.groupby(['AIRLINE']).ID.count()
@@ -108,16 +108,16 @@ def sum_model_cnt():
 
 @app.route("/airlineDash")
 def dashgraphs():
-   netcount_costdf,netcount_spl_costdf =collection_summary()
+   #netcount_costdf,netcount_spl_costdf =collection_summary()
     
     
     
-   return jsonify(netcount_spl_costdf.to_dict('records'))
-#render_template ('airlinedashboard.html')
+   #return jsonify(netcount_spl_costdf.to_dict('records'))
+   return render_template ('airlinedashboard.html')
 
 
 
-
+ 
 
 @app.route("/MsearchModels")
 def searchModels():
@@ -128,11 +128,13 @@ def EsearchModels():
 
 @app.route("/Refresh_Data")
 def DataRefresh():
-    exportdf,msdf,soldf=mongo_coll_read()
+    exportdf,msdf,soldf,scalecountdf,scalecostdf=mongo_coll_read()
     del exportdf['_id']
     del msdf['_id']
     del soldf['_id']
-    mongoR_I(exportdf,msdf,soldf)
+    del scalecountdf['_id']
+    del scalecostdf['_id']
+    mongoR_I(exportdf,msdf,soldf,scalecountdf,scalecostdf)
     elastic_update(exportdf,msdf,soldf)
     sql_update(exportdf,msdf,soldf)
     return render_template('/home.html')
@@ -141,7 +143,7 @@ def DataRefresh():
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++search code
 def readdata():
-    alldatadf,allsolddetdf,allsoldtrans=cloudM_R()
+    alldatadf,allsolddetdf,allsoldtrans,airscalecountdf,airscalecostdf=cloudM_R()
     return alldatadf
 
 
@@ -232,8 +234,11 @@ def retrieve_reg():
 @app.route("/dash_pane1")
 def dash_pane1():
     
-    
+    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost = cloudM_R()
     panedf,panedf2=collection_summary()
+    calcdf = cloudmodelsdf.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2','Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
+    airlinetotal=calcdf.groupby(['SIZE'],as_index=False).agg({'PRICE':'sum','ID':'count'}).rename(columns={'ID':"Total_Models"})
+    
     
     #distinctAirlinedf.head()
     #data_dict=distinctAirlinedf.to_dict('records')
