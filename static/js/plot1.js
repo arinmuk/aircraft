@@ -342,6 +342,7 @@ urlstring='https://aircraft-apis.herokuapp.com/readSales'
 d3.json(urlstring).then(function(sample_m) {
         data1=sample_m
         data=data1
+        console.log(data)
         yr2022 = data1.filter(year2022)
         yr2021 = data1.filter(year2021)
         yr2020 = data1.filter(year2020)
