@@ -1,4 +1,5 @@
 //console.log(data1);
+var ayr20232 = {}
 var ayr20222 = {}
 var ayr20212 = {}
 var ayr20202 = {}
@@ -13,6 +14,10 @@ var ayr20122 = {}
 var ayr20112 = {}
 var data=[]
 var data1=[]
+function ayear20232(sale) {
+        return sale.year == '2023';
+      }
+
 function ayear20222(sale) {
         return sale.year == '2022';
       }
@@ -62,6 +67,14 @@ var loc =0
 function ainittwo(){
         //your code
         //console.log(yr2019)
+
+        var trace12={x:ayr20232.map(row=>row.month),
+                y:ayr20232.map(row=>row.NetRecd),
+                name:"2023",
+                mode: 'markers',
+                 type:"scatter",
+                 marker: { size: ayr20232.map(row=>row.NetRecd/100) }}
+
         var trace11={x:ayr20222.map(row=>row.month),
                 y:ayr20222.map(row=>row.NetRecd),
                 name:"2022",
@@ -150,7 +163,7 @@ function ainittwo(){
         type:"scatter",
         marker: { size: ayr20112.map(row=>row.NetRecd/100) }
 }            
-        var data=[trace,trace1,trace2,trace3,trace4,trace5,trace6,trace7,trace8,trace9,trace10,trace11]
+        var data=[trace,trace1,trace2,trace3,trace4,trace5,trace6,trace7,trace8,trace9,trace10,trace11,trace12]
 
          var layout ={
                 title:"Monthly Sales Net Received",
@@ -183,7 +196,11 @@ function getData3(dataset){
          init()
          break;
 
-
+         case "2023":
+                x=ayr20232.map(row=>row.month),
+                y=ayr20232.map(row=>row.NetRecd)
+                loc=12
+                break;
          case "2022":
                 x=ayr20222.map(row=>row.month),
                 y=ayr20222.map(row=>row.NetRecd)
@@ -261,7 +278,7 @@ function getData3(dataset){
 function aupdatePlotlytwo(newx,newy,loc){
         ainittwo()
         arrtrc=[]
-        origarrtrc=[0,1,2,3,4,5,6,7,8,9,10,11]
+        origarrtrc=[0,1,2,3,4,5,6,7,8,9,10,11,12]
         for(i=0;i<origarrtrc.length;i++){
                 if(origarrtrc[i] != loc){arrtrc.push(origarrtrc[i])}
         }
@@ -273,11 +290,13 @@ function aupdatePlotlytwo(newx,newy,loc){
         Plotly.restyle(LINE,"y",[newy])
 }
 // YOUR CODE HERE
-urlstring='https://aircraft-apis.herokuapp.com/readSales'
+//urlstring='https://aircraft-apis.herokuapp.com/readSales'
+urlstring='http://127.0.0.1:5000/readSales'
 
 d3.json(urlstring).then(function(sample_m) {
         data1=sample_m
         data=data1
+ayr20232 = data1.filter(ayear20232)       
 ayr20222 = data1.filter(ayear20222)     
 ayr20212 = data1.filter(ayear20212)
 ayr20202 = data1.filter(ayear20202)

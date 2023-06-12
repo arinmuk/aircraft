@@ -1,7 +1,7 @@
 from flask import Flask,render_template,jsonify,request
 import json
 from pymongo import MongoClient 
-from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud
+from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud,pivotdatasum
 from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R
 from flask_cors import CORS, cross_origin
 from dash_data import collection_summary
@@ -271,6 +271,22 @@ def dash_pane3():
     return jsonify(panedf2.to_dict('records'))
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+@app.route("/PivotDash")
+def Pivotgraphs():
+   #netcount_costdf,netcount_spl_costdf =collection_summary()
+    
+        
+    
+   #return jsonify(netcount_spl_costdf.to_dict('records'))
+   return render_template ('wbrFusion.html')
+@app.route("/PivotDashData")
+def Pivotdata():
+   #netcount_costdf,netcount_spl_costdf =collection_summary()
+    
+        pv_df=pivotdatasum()
+        #del ressolddetails['_id']
+        pv_df.head()
+        return jsonify(pv_df.to_dict('records'))
+   
 if __name__=='__main__':
     app.run(debug=True)

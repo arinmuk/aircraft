@@ -111,6 +111,19 @@ def cloudM_R():
     return modelsdf,modelsolddf,solddetailsdf,colair_sc_cntdf,colair_sc_costdf
 
 
+def pivotdatasum():
+    db=cloudMClnt['Aircraft']
+    colsale2cloud=db['solddetails']
+    colmssoldcloud=db['modelsold']
+    modelsolddet_df=pd.DataFrame(list(colsale2cloud.find()))
+    modelsolddet_df.drop(['_id','ID'], axis='columns', inplace=True)
+    modelsoldAircraft_df=pd.DataFrame(list(colmssoldcloud.find()))
+    modelsoldAircraft_df.drop('_id',axis='columns', inplace=True)
+    modelsoldAircraft_df = modelsoldAircraft_df.rename(columns={"ID":"AircraftID"})
+    pivotdta_df=pd.merge(modelsolddet_df,modelsoldAircraft_df[['AircraftID','AIRLINE','SIZE']],on='AircraftID', how='inner')
+    pivotdta_df['Netcost']=pivotdta_df['price']+pivotdta_df['shipping']+pivotdta_df['tax']
+    return pivotdta_df
+
 #insert data into local mongo
 def mongoR_I(exportdf,msdf,soldf,airsc_cntdf,airsc_costdf):
     db=client['Aircraft']
