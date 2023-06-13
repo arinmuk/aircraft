@@ -27,10 +27,10 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 es
 
 from sqlalchemy import create_engine, MetaData, Table, select
-connection = pymssql.connect(host='Zbook',user=sqluser, password=sqlpass,database='Aircraft')
+connection = pymssql.connect(host=servername,user=sqluser, password=sqlpass,database='Aircraft')
 
 def sqlread():
-    conn = pymssql.connect(server='Zbook', user=sqluser, password=sqlpass, database='aircraft') 
+    conn = pymssql.connect(server='servername', user=sqluser, password=sqlpass, database='aircraft') 
     cursor = conn.cursor()
     qry='SELECT * from aircraft'
     salesmasterqry='select ID, MODEL_NO, DIMAID, WID, AIRLINE, AIRCRAFT_TYPE, REGISTRATION, DESCRIPTION, SIZE, PRICE, SHIPPING, TAX, COMPANY, ORDEREDFROM, DATEOFORDER,  HangarClub,  PictureID from aircraftsold'
@@ -217,7 +217,7 @@ def sql_update(mongodata,mongosold,mongosales):
     mongosold['SHIPPING'].fillna(0,inplace=True)
     mongosold['PRICE'].fillna(0,inplace=True)
     mongosold['PictureID'].fillna('',inplace=True)
-    connection = pymssql.connect(host='Zbook',
+    connection = pymssql.connect(host=servername,
                              user=sqluser,
                              password=sqlpass,
                              database='Aircraft')

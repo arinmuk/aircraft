@@ -8,7 +8,7 @@ import pymssql
 import pymongo
 import csv
 import json
-from config import cloudM,cloudMpassword,sqluser,sqlpass
+from config import cloudM,cloudMpassword,sqluser,sqlpass,servername
 from pymongo import MongoClient
 from flask import Flask, jsonify, render_template
 from elasticsearch import Elasticsearch
@@ -26,7 +26,7 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 es
 
 from sqlalchemy import create_engine, MetaData, Table, select
-connection = pymssql.connect(host='Zbook',user=sqluser, password=sqlpass,database='Aircraft')
+connection = pymssql.connect(host=servername,user=sqluser, password=sqlpass,database='Aircraft')
 
 # read cloud Mongo Data and return dataframes
 
