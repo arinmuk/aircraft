@@ -6,6 +6,7 @@ from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mong
 from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R
 from flask_cors import CORS, cross_origin
 from dash_data import collection_summary
+import numpy as np
 #client = MongoClient()
 #client = MongoClient('localhost', 27017)
 #db=client['Aircraft']
@@ -266,31 +267,36 @@ def dash_pane3(choice):
     panedf,panedf2=collection_summary()
     if selection =="All":
         total_summary_all = panedf2.groupby('Size',as_index=False).sum(['total','myCount'])
+        
     else:
         filterstr = panedf2["Size"]==selection
         total_summary=panedf2.where(filterstr,inplace=False)
-        totalairlines= panedf2['Airline'].nunique()
+        totalairlines= total_summary['Airline'].nunique()
         print(totalairlines)
-        total_summary_all =total_summary.groupby('Size',as_index=False).sum(['total','myCount'])
-        total_summary_all['airlineCount']=totalairlines
-        total_summary_all.head()   
+        total_summary =total_summary.groupby('Size',as_index=False).sum(['total','myCount'])
+        total_summary['airlineCount']=totalairlines
+        total_summary = total_summary.rename(columns={"myCount":"ModelCount"})
+        total_summary_all = total_summary
+        
     #distinctAirlinedf.head()
     #data_dict=distinctAirlinedf.to_dict('records')
     panedf_dict = panedf.to_dict('records')
     panedf2_dict=panedf2.to_dict('records')
     return jsonify(total_summary_all.to_dict('records'))
 
-@app.route("/Size")
+@app.route("/ScaleSize")
 def Sizedata():
    #netcount_costdf,netcount_spl_costdf =collection_summary()
         panedf,panedf2=collection_summary()
-        size_dict={}
-
-        sizedf=pd.DataFrame(panedf2["Size"].unique())
-        sizedf.rename(columns={0:"Size"},inplace=True)
-        size_dict=sizedf.to_json(orient='records')
+        #size_dict={}
+        
+        s=panedf2["Size"].unique()
+        s=np.insert(s,0,"All")
+        #sizedf=pd.DataFrame(panedf2["Size"].unique())
+        #sizedf.rename(columns={0:"Size"},inplace=True)
+        #size_dict=sizedf.to_json(orient='records')
         #size_dict
-        return size_dict
+        return jsonify(list(s))#size_dict
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @app.route("/PivotDash")

@@ -7,7 +7,7 @@ function buildMetadata(sample) {
     // Use d3 to select the panel with id of `#sample-metadata`
     d3.json(urlstring).then(function(sample_m) {
       var objsample=sample_m
-      //console.log(objsample)
+      console.log(objsample)
       
       var htmlclear = d3.select(".panel-body")
       var test = htmlclear.html()
@@ -18,10 +18,19 @@ function buildMetadata(sample) {
       }
       //console.log(htmlclear)
       Object.entries(objsample).forEach(([key,value])=>{
+         Object.entries(value).forEach(([a,b])=>{
         var row = htmlclear.append("h5")
-        row.text(key+" : "+value)
+        row.text(a+" : "+b)
+        console.log(a)
+        console.log(b)
+        console.log("+++++++")
 
-      })
+      }
+ 
+      )
+   
+    
+    })
     // Use `.html("") to clear any existing metadata
 
     // Use `Object.entries` to add each key and value pair to the panel
@@ -207,23 +216,24 @@ function init() {
   var selector = d3.select("#selDataset");
 
   // Use the list of sample names to populate the select options
-  d3.json("http://127.0.0.1:5000/Size").then((sampleNames) => {
-    console.log(sampleNames)
-    sampleNames.forEach((sample) => {
-      console.log(sample["Size"])
+  d3.json("/ScaleSize").then((sampleNames) => {
+    //console.log(sampleNames)
+    sizedata=sampleNames
+    sizedata.forEach((sample) => {
+      console.log(sample)
 
       selector
         .append("option")
-        .text(sample["Size"])
-        .property("value", sample["Size"]);
+        .text(sample)
+        .property("value", sample);
     });
 
     // Use the first sample from the list to build the initial plots
-    /////const firstSample = sampleNames[0];
-    ////console.log(firstSample)
+    const firstSample = sizedata[0];
+    console.log(firstSample)
 
     ////buildCharts(firstSample);
-    ///buildMetadata(firstSample);
+    buildMetadata(firstSample);
   });
 }
 
@@ -234,7 +244,7 @@ function optionChanged(newSample) {
   //var dset = d3.select("#selDataset").node().value
   //console.log(dset)
 
-  buildCharts(newSample);
+  //////buildCharts(newSample);
   buildMetadata(newSample);
 
 }

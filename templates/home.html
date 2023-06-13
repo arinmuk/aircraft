@@ -1,6 +1,7 @@
  {% extends 'layouts.html' %}
 
  {% block body %}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
  <div class = "jumbotron text-center">
      <h1> Model Collection Database</h1>
      </div>
@@ -57,16 +58,16 @@
 
 
 
-
-
+    <script src="static/js/dashapp.js"></script>
+    
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
  {% endblock %}
-
  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
- <!-- <script src="{{ url_for('static', filename='js/bonus.js') }}"></script>
- <script src="{{ url_for('static', filename='js/app.js') }}"></script></script> -->
- <script src="static/js/dashapp.js"></script>
+
+ <!-- <script src="{{ url_for('static', filename='js/bonus.js') }}"></script>-->
+ 
+  <!---->
 </body>
 
 </html>
