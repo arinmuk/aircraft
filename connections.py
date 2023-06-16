@@ -30,7 +30,7 @@ from sqlalchemy import create_engine, MetaData, Table, select
 connection = pymssql.connect(host=servername,user=sqluser, password=sqlpass,database='Aircraft')
 
 def sqlread():
-    conn = pymssql.connect(server='servername', user=sqluser, password=sqlpass, database='aircraft') 
+    conn = pymssql.connect(server=servername, user=sqluser, password=sqlpass, database='aircraft') 
     cursor = conn.cursor()
     qry='SELECT * from aircraft'
     salesmasterqry='select ID, MODEL_NO, DIMAID, WID, AIRLINE, AIRCRAFT_TYPE, REGISTRATION, DESCRIPTION, SIZE, PRICE, SHIPPING, TAX, COMPANY, ORDEREDFROM, DATEOFORDER,  HangarClub,  PictureID from aircraftsold'
