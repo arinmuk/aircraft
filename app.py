@@ -188,9 +188,87 @@ def retrieveairline():
     alldata_dict=alldatadf.to_dict('records')
     return render_template("formsearch.html", data = data_dict, alldata=alldata_dict)
 
+#++++++++++++++++++++++++
+
+
+@app.route("/dash_pane5/<choice>")
+def dash_pane5(choice):
+    
+    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost = cloudM_R()
+    panedf,panedf2=collection_summary()
+    calcdf = cloudmodelsdf#.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2','Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
+    airlinetotal=calcdf.groupby(['SIZE'],as_index=False).agg({'PRICE':'sum','ID':'count'}).rename(columns={'ID':"Total_Models"})
+    
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    #panedf_dict = panedf.to_dict('records')
+    #panedf2_dict=panedf2.to_dict('records')
+    selection=choice
+    tot_summary=pd.DataFrame()
+    if selection =="All":
+        tot_summary=panedf2.copy()   
+    else:
+        filterstr = panedf2["Size"]==selection
+        tot_summary=panedf2.where(filterstr,inplace=False)
+        
+    tot_summary=tot_summary.dropna()
+    tot_summary=tot_summary.rename(columns={"myCount":"ModelCount"})
+    return jsonify(tot_summary.to_dict('records'))
 
 
 
+@app.route("/dash_pane1")
+def dash_pane1():
+    
+    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost = cloudM_R()
+    panedf,panedf2=collection_summary()
+    calcdf = cloudmodelsdf#.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2','Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
+    airlinetotal=calcdf.groupby(['SIZE'],as_index=False).agg({'PRICE':'sum','ID':'count'}).rename(columns={'ID':"Total_Models"})
+    
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    panedf_dict = panedf.to_dict('records')
+    panedf2_dict=panedf2.to_dict('records')
+    return render_template("home.html", data = panedf_dict, alldata=panedf2_dict)
+
+@app.route("/dash_pane2")
+def dash_pane2():
+    
+    
+    panedf,panedf2=collection_summary()
+    
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    #panedf_dict = panedf.to_dict('records')
+    panedf = panedf.rename(columns={"myCount":"ModelCount"})
+    panedf_dict=panedf.to_dict('records')
+    return jsonify(panedf.to_dict('records'))
+
+@app.route("/dash_pane3/<choice>")
+def dash_pane3(choice):
+    
+    selection=choice
+    panedf,panedf2=collection_summary()
+    if selection =="All":
+        total_summary_all = panedf2.groupby('Size',as_index=False).sum(['total','myCount'])
+        
+    else:
+        filterstr = panedf2["Size"]==selection
+        total_summary=panedf2.where(filterstr,inplace=False)
+        totalairlines= total_summary['Airline'].nunique()
+        print(totalairlines)
+        total_summary =total_summary.groupby('Size',as_index=False).sum(['total','myCount'])
+        total_summary['airlineCount']=totalairlines
+        
+        total_summary_all = total_summary
+    total_summary_all = total_summary_all.rename(columns={"myCount":"ModelCount"})   
+    #distinctAirlinedf.head()
+    #data_dict=distinctAirlinedf.to_dict('records')
+    panedf_dict = panedf.to_dict('records')
+    panedf2_dict=panedf2.to_dict('records')
+    return jsonify(total_summary_all.to_dict('records'))
 #++++++++++++++++++++++++++
 
 @app.route("/sendReg", methods=["GET", "POST"])
@@ -233,56 +311,7 @@ def retrieve_reg():
     return render_template("frmsearchreg.html", data = data_dict, alldata=alldata_dict)
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-@app.route("/dash_pane1")
-def dash_pane1():
-    
-    cloudmodelsdf,cloudsoldmodelsdf,cloudsolddetails,cloudairlinescalecount,cloudairlinescalecost = cloudM_R()
-    panedf,panedf2=collection_summary()
-    calcdf = cloudmodelsdf.drop(['DIMAID', 'WID','DESCRIPTION', 'PICTURE', 'Picture2','Picture3', 'Rare', 'HangarClub', 'MarketValue', 'PictureID'],axis =1)
-    airlinetotal=calcdf.groupby(['SIZE'],as_index=False).agg({'PRICE':'sum','ID':'count'}).rename(columns={'ID':"Total_Models"})
-    
-    
-    #distinctAirlinedf.head()
-    #data_dict=distinctAirlinedf.to_dict('records')
-    panedf_dict = panedf.to_dict('records')
-    panedf2_dict=panedf2.to_dict('records')
-    return render_template("home.html", data = panedf_dict, alldata=panedf2_dict)
 
-@app.route("/dash_pane2")
-def dash_pane2():
-    
-    
-    panedf,panedf2=collection_summary()
-    
-    #distinctAirlinedf.head()
-    #data_dict=distinctAirlinedf.to_dict('records')
-    #panedf_dict = panedf.to_dict('records')
-    panedf2_dict=panedf2.to_dict('records')
-    return jsonify(panedf.to_dict('records'))
-
-@app.route("/dash_pane3/<choice>")
-def dash_pane3(choice):
-    
-    selection=choice
-    panedf,panedf2=collection_summary()
-    if selection =="All":
-        total_summary_all = panedf2.groupby('Size',as_index=False).sum(['total','myCount'])
-        
-    else:
-        filterstr = panedf2["Size"]==selection
-        total_summary=panedf2.where(filterstr,inplace=False)
-        totalairlines= total_summary['Airline'].nunique()
-        print(totalairlines)
-        total_summary =total_summary.groupby('Size',as_index=False).sum(['total','myCount'])
-        total_summary['airlineCount']=totalairlines
-        total_summary = total_summary.rename(columns={"myCount":"ModelCount"})
-        total_summary_all = total_summary
-        
-    #distinctAirlinedf.head()
-    #data_dict=distinctAirlinedf.to_dict('records')
-    panedf_dict = panedf.to_dict('records')
-    panedf2_dict=panedf2.to_dict('records')
-    return jsonify(total_summary_all.to_dict('records'))
 
 @app.route("/ScaleSize")
 def Sizedata():

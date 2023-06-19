@@ -7,12 +7,12 @@ function buildMetadata(sample) {
     // Use d3 to select the panel with id of `#sample-metadata`
     d3.json(urlstring).then(function(sample_m) {
       var objsample=sample_m
-      console.log(objsample)
+      //console.log(objsample)
       
       var htmlclear = d3.select(".panel-body")
       var test = htmlclear.html()
       
-      console.log(test)
+      //console.log(test)
       if (test !=''){
         d3.select(".panel-body").html("")
       }
@@ -21,9 +21,9 @@ function buildMetadata(sample) {
          Object.entries(value).forEach(([a,b])=>{
         var row = htmlclear.append("h5")
         row.text(a+" : "+b)
-        console.log(a)
-        console.log(b)
-        console.log("+++++++")
+        //console.log(a)
+        //console.log(b)
+        //console.log("+++++++")
 
       }
  
@@ -42,70 +42,113 @@ function buildMetadata(sample) {
 })}
 
 function buildCharts(sample) {
+
+  //
+// "total": 9861.16, 
+//"ModelCount": 280, 
+//"Airline": "BRITISH AIRWAYS", 
+//"Size": "1:400"
+//
+//
+  //
   var workarr=[]
   var samp_arr=[]
   var toptenarr=[]
   // @TODO: Use `d3.json` to fetch the sample data for the plots
-  urlstring="/samples/"+sample
-  var otuid=[]
-  var otulabels=[]
-  var svalues=[]
-  var otuidbub=[]
-  var svaluesbub=[]
+  urlstring="/dash_pane5/"+sample
+  var parasample=sample
+  var Size=[]   //Size  otuid
+  var Airline=[]  //Airline otulabels
+  var ModelCount=[]  // ModelCount svalues
+  var otuidbub=[]    //otuidbub  Size
+  var total=[] //total  svaluesbub
   var otulabelsbub=[]
-
+  var totalcost = 0
+  //var scalecost={}
   //console.log(urlstring)
     d3.json(urlstring).then((sample_m) => {
-      //console.log(sample_m)
-      otuidbub=sample_m.otu_ids
-      otulabelsbub=sample_m.otu_labels
-      svaluesbub=sample_m.sample_values
-      var length=sample_m.sample_values.length
+      console.log(sample_m)
+      sample_m.sort((a, b) => (a.total > b.total) ? 1 : -1)
+      Size=sample_m.map(element =>element.Size)
+      Airline=sample_m.map(element =>element.Airline)
+      total=sample_m.map(element =>Math.round(element.total))
+      ModelCount=sample_m.map(element =>element.ModelCount)
+      if (parasample =="All") {
+        for (var i in total) {
+          totalcost += total[i];
+        }}
+        else {
+
+          for (var i in total) {
+            totalcost += total[i];
+          }
+
+        }
+        let scalecost = {"scale":sample,"TotalCost":totalcost}
+        console.log(total)
+        console.log(totalcost)
+        console.log(scalecost)
+      ///otuidbub=sample_m.map(element =>element.Size)
+      //otulabelsbub=sample_m.map(element =>element.Airline)
+    
+      //var length=sample_m.sample_values.length
+      var length=sample_m.length
       for (var j=0;j<length;j++)  {
             workarr=[]
             for (element in sample_m){
-            workarr.push(sample_m[element][j])
+              //console.log(sample_m[element].total)
+            workarr.push(sample_m[element].total)
 
           }
           //console.log(workarr)
-          samp_arr.push(workarr)
+     
          
 
     }
+    samp_arr.push(workarr)
     //console.log(samp_arr)
-    samp_arr.sort(function(a,b){
-      return b[2]-a[2]
-    })
-   // console.log(samp_arr)
+    samp_arr.sort((a,b)=> b-a)
+      
+    console.log(samp_arr)
     toptenarr=samp_arr.slice(0,10)
     console.log(toptenarr)
-  for (var x=0;x<10;x++){  
-    otuid.push(toptenarr[x][0])
-    otulabels.push(toptenarr[x][1])
-    svalues.push(toptenarr[x][2])
-}
+  ///for (var x=0;x<10;x++){  
+   /// otuid.push(toptenarr[x][0])
+   /// otulabels.push(toptenarr[x][1])
+   /// svalues.push(toptenarr[x][2])
+////}
  //console.log("otuid:",otuid)
  //console.log("otulabels:",otulabels)
  //console.log("svalues:",svalues)
 
       // @TODO: Build a Bubble Chart using the sample data
-
+      console.log(Airline)
+      console.log(total)
+      var airtop10= (Airline.slice(-20))
+      var airtop10cost = (total.slice(-20))
+      var airtopModcnt=(ModelCount.slice(-20))
+      console.log(airtop10)
+      console.log(airtop10cost)
       var trace1 = {
-        x: otuidbub,
-        y: svaluesbub,
+        x: airtop10,
+        y: airtop10cost, //svaluesbub.map(element=>Math.round(element)/100),
+        text: airtopModcnt.map(element=>'Tot_Models:'+element),//['A<br>size: 40', 'B<br>size: 60', 'C<br>size: 80', 'D<br>size: 100']
         mode: 'markers',
         marker: { 
-          color: otuidbub,
+          color: airtop10cost,
           opacity: [1,0.8, 0.6],
-          size: svaluesbub
+          size: airtop10cost.map(element=>((element>1000) ? element/100 : element/10))
         }
       };
       
       var data1 = [trace1];
       
       var layout1 = {
-        title: '',
-        showlegend: false,
+        scattermode: 'group',
+        title: 'Top 20 airlines and Value In collection',
+        xaxis: {title: 'Airlines'},
+        yaxis: {title: '$ Amount'},
+        showlegend: true,
         height: 700,
         width: 1200
       };
@@ -115,9 +158,9 @@ function buildCharts(sample) {
 
     // @TODO: Build a Pie Chart
     var data = [{
-      values: svalues,
-      labels: otuid,
-      hovertext:otulabels,
+      values: airtopModcnt,
+      labels: airtop10,
+      hovertext:airtop10cost.map(element=>'Tot_Value:'+element),
       hoverinfo: "hovertext",
       type: "pie"
     }];
@@ -130,70 +173,27 @@ function buildCharts(sample) {
     Plotly.newPlot("pie", data, layout)
 
   // @TODO: Build a Guage Chart may be working
-  urlstring="/wfreq/"+sample
+  urlstring="/dash_pane5/"+sample
   d3.json(urlstring).then((sample_g) => {
-    valueg=sample_g.WFREQ
+    valueg=scalecost.TotalCost
 
     //8888888888888888888888888888888888888
 
     // Enter a scrubbing freq per week between 0 and 10
 var level = valueg;
-
+console.log(level)
 // Trig to calc meter point
-var degrees = 9- level,
-     radius = .50;
-var radians = degrees * Math.PI / 10
-var x = radius * Math.cos(radians);
-var y = radius * Math.sin(radians);
+var data = [
+	{
+		domain: { x: [0, 1], y: [0, 1] },
+		value: level,
+		title: { text: "Amount in $" },
+		type: "indicator",
+		mode: "gauge+number"
+	}
+];
 
-// Path: may have to change to create a better triangle
-var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
-     pathX = String(x),
-     space = ' ',
-     pathY = String(y),
-     pathEnd = ' Z';
-var path = mainPath.concat(pathX,space,pathY,pathEnd);
-
-var data = [{ type: 'scatter',
-   x: [0], y:[0],
-    marker: {size: 28, color:'850000'},
-    showlegend: false,
-    name: 'wash freq per week',
-    text: level,
-    hoverinfo: 'text+name'},
-  { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50],
-  rotation: 90,
-  text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
-  textinfo: 'text',
-  textposition:'inside',
-  marker: {colors:['rgba(14, 127, 0, .5)', 'rgba(110, 154, 22, .5)',
-                         'rgba(155, 202, 42, .5)', 'rgba(202, 209, 95, .5)',
-                         'rgba(210, 206, 145, .5)', 'rgba(232, 226, 202, .5)',
-                         'rgba(140, 154, 22, 0)','rgba(10, 154, 22, .5)','rgba(80, 154, 22, .5)','rgba(255, 255, 255, 0)']},
-  labels: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
-  hoverinfo: 'label',
-  hole: .5,
-  type: 'pie',
-  showlegend: false
-}];
-
-var layout = {
-  shapes:[{
-      type: 'path',
-      path: path,
-      fillcolor: '850000',
-      line: {
-        color: '850000'
-      }
-    }],
-  title: 'Gauge Wash freq per Week',
-  height: 550,
-  width: 700,
-  xaxis: {zeroline:false, showticklabels:false,
-             showgrid: false, range: [-1, 1]},
-  yaxis: {zeroline:false, showticklabels:false,
-             showgrid: false, range: [-1, 1]}
-};
+var layout = { width: 500, height: 500, margin: { t: 0, b: 0 } };
 
 Plotly.newPlot('gauge', data, layout);
 
@@ -232,8 +232,9 @@ function init() {
     const firstSample = sizedata[0];
     console.log(firstSample)
 
-    ////buildCharts(firstSample);
+    ;
     buildMetadata(firstSample);
+    buildCharts(firstSample)
   });
 }
 
@@ -244,7 +245,7 @@ function optionChanged(newSample) {
   //var dset = d3.select("#selDataset").node().value
   //console.log(dset)
 
-  //////buildCharts(newSample);
+  buildCharts(newSample);
   buildMetadata(newSample);
 
 }
