@@ -137,7 +137,7 @@ function buildCharts(sample) {
         marker: { 
           color: airtop10cost,
           opacity: [1,0.8, 0.6],
-          size: airtop10cost.map(element=>((element>1000) ? element/100 : element/10))
+          size: airtop10cost.map(element=>((element>1000) ? element/100 : element/5))
         }
       };
       

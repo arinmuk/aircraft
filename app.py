@@ -3,7 +3,7 @@ import json
 import pandas as pd
 from pymongo import MongoClient 
 from connections import cloudM_R,mongoR_I,elastic_update,sql_update,sqlread,mongocloud,pivotdatasum
-from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R
+from search import DistinctAirline_cloudM_R,SearchAirline_cloudM_R,DistinctRegistration_cloudM_R,SearchRegistration_cloudM_R,dataanimation
 from flask_cors import CORS, cross_origin
 from dash_data import collection_summary
 import numpy as np
@@ -344,6 +344,21 @@ def Pivotdata():
         #del ressolddetails['_id']
         pv_df.head()
         return jsonify(pv_df.to_dict('records'))
+
+@app.route("/animationgraphdata")
+def animationgraphdata():
+    animedf=dataanimation()
+    
+    return jsonify(animedf.to_dict('records'))
+
+@app.route("/highchart")
+def highchart():
+   #netcount_costdf,netcount_spl_costdf =collection_summary()
+    
+        
+    
+   #return jsonify(netcount_spl_costdf.to_dict('records'))
+   return render_template ('race_highchart.html')
    
 if __name__=='__main__':
     app.run(debug=True)

@@ -1,5 +1,5 @@
 cloudM = "arinmuk"
-cloudMpassword = "amarji123!"
+cloudMpassword = "AirAmerica419"
 sqluser = "arindam"
 sqlpass = "Airbusa350xwb"
 servername="P17G2"

@@ -68,4 +68,13 @@ def DistinctRegistration_cloudM_R():
     
     return distinctmodelsdf
 
+def dataanimation():
+    db=cloudMClnt['Aircraft']
+    colmodelscloud=db['models']
+    modelscoldf = pd.DataFrame(list(colmodelscloud.find().sort([('ID', 1)])))
+    modelscoldf["month"]=modelscoldf["DATEOFORDER"].dt.month
+    modelscoldf["year"]=modelscoldf["DATEOFORDER"].dt.year
+    modelscoldf= modelscoldf.drop(['_id','MODEL_NO','DIMAID','WID','AIRCRAFT_TYPE','REGISTRATION','DESCRIPTION','SIZE','PRICE','SHIPPING','TAX','COMPANY','ORDEREDFROM','DATEOFORDER','PictureID','HangarClub'],axis=1)
+    modelscolgrpdf=modelscoldf.groupby(['year','AIRLINE'],as_index=False).count().rename(columns={'ID':'ModelCount'})
+    return modelscolgrpdf
 
