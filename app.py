@@ -347,9 +347,9 @@ def Pivotdata():
 
 @app.route("/animationgraphdata")
 def animationgraphdata():
-    animedf=dataanimation()
+    lstanimated=dataanimation()
     
-    return jsonify(animedf.to_dict('records'))
+    return jsonify(lstanimated)
 
 @app.route("/highchart")
 def highchart():
