@@ -2,7 +2,7 @@ const startYear = 2011,
     endYear = 2023,
     btn = document.getElementById('play-pause-button'),
     input = document.getElementById('play-range'),
-    nbr = 20;
+    nbr = 60;
     objAirdata={}
 console.log(input.value)
 let dataset, chart;
@@ -119,7 +119,7 @@ function getSubtitle() {
     return `<span style="font-size: 80px">${input.value}</span>
         <br>
         <span style="font-size: 22px">
-            Total: <b>: ${AirlineData}</b> billion
+            Total: <b>: ${AirlineData}</b> 
         </span>`;
 }
 
@@ -138,7 +138,7 @@ function getSubtitle() {
             marginRight: 50
         },
         title: {
-            text: 'World population by country',
+            text: 'Collection Growth by Airlines',
             align: 'left'
         },
         subtitle: {
