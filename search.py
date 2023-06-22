@@ -68,15 +68,55 @@ def DistinctRegistration_cloudM_R():
     
     return distinctmodelsdf
 
+def createdummy(modelscoldf1):
+    cnt=0
+    mth=1
+    lstdump=[]
+
+    temprecdf = pd.DataFrame()#columns = ["ID","AIRLINE", "month", "year"])
+    uair=modelscoldf1['AIRLINE'].unique()
+    uair
+    for airline in uair:
+        for j in range (2000,2024):
+            dumpdict={}
+            dumpdict['ID']=cnt
+            dumpdict['AIRLINE']=airline
+            dumpdict['month']=mth
+            dumpdict['year']=j
+            lstdump.append(dumpdict)
+        
+        
+
+
+
+
+
+   
+    temprecdf = pd.DataFrame(lstdump)
+    return temprecdf
+
+
 def dataanimation():
+    #db=cloudMClnt['Aircraft']
+    #colmodelscloud=db['models']
+    #modelscoldf = pd.DataFrame(list(colmodelscloud.find().sort([('ID', 1)])))
+    #modelscoldf["month"]=modelscoldf["DATEOFORDER"].dt.month
+    #modelscoldf["year"]=modelscoldf["DATEOFORDER"].dt.year
+    #modelscoldf= modelscoldf.drop(['_id','MODEL_NO','DIMAID','WID','AIRCRAFT_TYPE','REGISTRATION','DESCRIPTION','SIZE','PRICE','SHIPPING','TAX','COMPANY','ORDEREDFROM','DATEOFORDER','PictureID','HangarClub'],axis=1)
+    #modelscolgrpdf=modelscoldf.groupby(['year','AIRLINE'],as_index=False).count().rename(columns={'ID':'ModelCount'})
+    
+
     db=cloudMClnt['Aircraft']
     colmodelscloud=db['models']
     modelscoldf = pd.DataFrame(list(colmodelscloud.find().sort([('ID', 1)])))
     modelscoldf["month"]=modelscoldf["DATEOFORDER"].dt.month
     modelscoldf["year"]=modelscoldf["DATEOFORDER"].dt.year
     modelscoldf= modelscoldf.drop(['_id','MODEL_NO','DIMAID','WID','AIRCRAFT_TYPE','REGISTRATION','DESCRIPTION','SIZE','PRICE','SHIPPING','TAX','COMPANY','ORDEREDFROM','DATEOFORDER','PictureID','HangarClub'],axis=1)
-    modelscolgrpdf=modelscoldf.groupby(['year','AIRLINE'],as_index=False).count().rename(columns={'ID':'ModelCount'})
-
+    dummydf=createdummy(modelscoldf)
+    modelscoldf2=pd.concat([modelscoldf,dummydf],ignore_index=True)
+    
+    modelscolgrpdf=modelscoldf2.groupby(['year','AIRLINE'],as_index=False).count().rename(columns={'ID':'ModelCount'})
+    modelscolgrpdf['ModelCount']=modelscolgrpdf['ModelCount']-1
 
 
     uniqueAir = modelscolgrpdf['AIRLINE'].unique()

@@ -1,4 +1,4 @@
-const startYear = 2011,
+const startYear = 2000,
     endYear = 2023,
     btn = document.getElementById('play-pause-button'),
     input = document.getElementById('play-range'),
