@@ -2,13 +2,16 @@ const startYear = 2000,
     endYear = 2023,
     btn = document.getElementById('play-pause-button'),
     input = document.getElementById('play-range'),
-    nbr = 60;
+    nbr = 40;
     objAirdata={}
 console.log(input.value)
 let dataset, chart;
-const AirlineData=[];
+let AirlineData=[];
 const AirlineName=[];
 
+
+
+let totalmodcount = 0;
 /*
  * Animate dataLabels functionality
  */
@@ -89,14 +92,15 @@ const AirlineName=[];
 
 
 function getData(year) {
+    totalmodcount=0
     const output = Object.entries(dataset)
         .map(Airline => {
             //console.log('dataset',dataset)
             //console.log('airline',Airline)
             sample_m=Airline[1]
             objAirdata=Object.assign(objAirdata,sample_m)
-            console.log(sample_m)
-            console.log('objsample@@',objAirdata)
+            //console.log(sample_m)
+            //console.log('objsample@@',objAirdata)
             ///const [AirlineName, AirlineData] = Airline;
             ///const AirlineName =
 
@@ -106,23 +110,29 @@ function getData(year) {
              //  console.log(key, objAirdata[key])
               //  AirlineData.push(objAirdata[key])}
 
-           
-            console.log('*****',year,AirlineName,objAirdata[AirlineName][year])
-            return [AirlineName, Number(objAirdata[AirlineName][year])];
+            totalmodcount=objAirdata[AirlineName][year]+totalmodcount
+            
+            console.log('*****',year,AirlineName,objAirdata[AirlineName][year],totalmodcount)
+            return [AirlineName, Number(objAirdata[AirlineName][year],totalmodcount)];
         })
         .sort((a, b) => b[1] - a[1]);
+        console.log('output@@@@@@!!!',output)
     return [output[0], output.slice(1, nbr)];
 }
 
 function getSubtitle() {
-    const AirlineData = (getData(input.value)[0][1]).toFixed(2);
+    let AirlineData= (getData(input.value)[0][1]).toFixed(2);
+    console.log('subtitle++++++',totalmodcount)
+    const a=totalmodcount
+    totalmodcount=0
     return `<span style="font-size: 80px">${input.value}</span>
         <br>
         <span style="font-size: 22px">
-            Total: <b>: ${AirlineData}</b> 
+            Total: <b>: ${a}</b> 
         </span>`;
+        
 }
-
+//AirlineData
 (async () => {
 
     dataset = await fetch(
