@@ -75,7 +75,7 @@ d3.json(urlstring).then(function(sample_m) {
         // enable a color range
         chart3.colorRange(true);
         // set the color range length
-       chart3.colorRange().length('80%');
+       chart3.colorRange().length('40%');
       
         // display the word cloud chart
         chart3.container("container");

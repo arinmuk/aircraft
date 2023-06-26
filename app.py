@@ -104,6 +104,11 @@ def sum_model_cnt():
         airgrp=aircraftdf.groupby(['AIRLINE'],as_index=False).agg({"ID":"count"}).rename(columns={'ID':'Count'})
         airgrp=airgrp.sort_values(['Count'],ascending=False)
         top10airgrp=airgrp.head(30)
+        bins=[1,50,100,150,200,250,300,400,500]
+        group_names = ["<50", "<100", "<150", "<200", "<250","<300","<400","<500"]
+        
+        top10airgrp["Group_Count"] = pd.cut(top10airgrp["Count"], bins, labels=group_names, include_lowest=True)
+        top10airgrp
         return jsonify(top10airgrp.to_dict('records'))
     
 

@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-    <meta charset="UTF-8">
-    <title>Semi-annual report</title>
-</head>
+{% extends 'layouts.html' %}
+
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+<div class = "jumbotron text-center">
+    <h1> Model Collection Database</h1>
+    </div>
 <body style="background-color:#dcdaf0;">
     
-<h1 style="font-family:verdana;color:#6a578a;text-align:center;font-size:300%">Dashboard Reporting</h1>
+<h1 style="font-family:verdana;color:#6a578a;text-align:center;font-size:200%">Dashboard Reporting</h1>
 
 <! -- WebDataRocks -->
 <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet"/>
@@ -47,4 +47,5 @@
 <script src="static/js/wbrFusion.js"></script>
 
 </body>
+{% endblock %}
 </html>

@@ -20,7 +20,8 @@ client = MongoClient('localhost', 27017)
 #cloud mongo connect
 cloudMClnt=MongoClient()
 cloudMClnt=MongoClient("mongodb+srv://"+ cloudM + ":"+ cloudMpassword + "@cluster0-omshy.mongodb.net/test?retryWrites=true&w=majority")
-
+db=cloudMClnt['Aircraft']
+colmodels=db['models']
 
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 es
@@ -32,8 +33,7 @@ connection = pymssql.connect(host=servername,user=sqluser, password=sqlpass,data
 
 
 def SearchAirline_cloudM_R(airlinename):
-    db=cloudMClnt['Aircraft']
-    colmodels=db['models']
+
     airline=airlinename
     
     
@@ -41,8 +41,7 @@ def SearchAirline_cloudM_R(airlinename):
     
     return modelsdf
 def SearchRegistration_cloudM_R(registration):
-    db=cloudMClnt['Aircraft']
-    colmodels=db['models']
+ 
     reg=registration
     
     
@@ -51,8 +50,7 @@ def SearchRegistration_cloudM_R(registration):
     return modelsdf
 
 def DistinctAirline_cloudM_R():
-    db=cloudMClnt['Aircraft']
-    colmodels=db['models']
+
     
     
     distinctmodelsdf = pd.DataFrame(list(colmodels.distinct('AIRLINE')))
@@ -60,8 +58,7 @@ def DistinctAirline_cloudM_R():
     return distinctmodelsdf
 
 def DistinctRegistration_cloudM_R():
-    db=cloudMClnt['Aircraft']
-    colmodels=db['models']
+
     
     
     distinctmodelsdf = pd.DataFrame(list(colmodels.distinct('REGISTRATION')))
@@ -106,7 +103,6 @@ def dataanimation():
     #modelscolgrpdf=modelscoldf.groupby(['year','AIRLINE'],as_index=False).count().rename(columns={'ID':'ModelCount'})
     
 
-    db=cloudMClnt['Aircraft']
     colmodelscloud=db['models']
     modelscoldf = pd.DataFrame(list(colmodelscloud.find().sort([('ID', 1)])))
     modelscoldf["month"]=modelscoldf["DATEOFORDER"].dt.month

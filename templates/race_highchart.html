@@ -1,5 +1,12 @@
 
-<body >
+{% extends 'layouts.html' %}
+
+{% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+<div class = "jumbotron text-center">
+	<h3> Model Collection Database</h3>
+	</div>
+
  <link rel="stylesheet" href="static/css/hichart.css">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
  <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -21,7 +28,8 @@
  <script src="static/js/hichart.js"></script>
  <!-- <script src="{{ url_for('static', filename='js/bonus.js') }}"></script>-->
  
+ {% endblock %}
   <!---->
-</body>
 
-</html>
+
+<
