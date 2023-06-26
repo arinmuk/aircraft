@@ -99,7 +99,7 @@ d3.json(urlstring).then(function(sample_m) {
   
         chart4
           .tooltip()
-          .position('center-top')
+          .position('center-left')
           .anchor('center-bottom')
           .offsetX(0)
           .offsetY(5)
@@ -118,7 +118,7 @@ d3.json(urlstring).then(function(sample_m) {
         chart4.yAxis().title('Count');
   
         // set container id for the chart
-        chart4.container('plot3');
+        chart4.container('container1');
   
         // initiate chart drawing
         chart4.draw();
