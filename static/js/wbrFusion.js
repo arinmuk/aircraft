@@ -17,7 +17,7 @@ aircraft=[]
   var pivot = new WebDataRocks({
     container: "#wdr-component",
     toolbar: false,
-    "height": 400,
+    "height": 500,
     report: {
         "dataSource": {
             "dataSourceType": "json",
@@ -58,7 +58,7 @@ function createAreaChart() {
         type: "area2d",
         renderAt: "fusionchartArea",
         width: "100%",
-        height: 400
+        height: 500
     });
     pivot.fusioncharts.getData({
     type: chart.chartType(), "slice": {
@@ -92,7 +92,7 @@ function createBarChart() {
         type: "bar2d",
         renderAt: "fusionchartBar",
         width: "100%",
-        height: 400
+        height: 500
     });
     pivot.fusioncharts.getData({
     type: chart.chartType(), "slice": {
@@ -127,10 +127,10 @@ function createBarChart() {
 
 function createPieChart() {
     var chart = new FusionCharts({
-        type: "pie2d",
+        type: "pie3d",
         renderAt: "fusionchartPie",
         width: "100%",
-        height: 400
+        height: 500
     });
     pivot.fusioncharts.getData({
         type: chart.chartType()
