@@ -1,5 +1,5 @@
 const startYear = 2000,
-    endYear = 2023,
+    endYear = 2024
     btn = document.getElementById('play-pause-button'),
     input = document.getElementById('play-range'),
     nbr = 40;

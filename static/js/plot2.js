@@ -1,4 +1,5 @@
 //console.log(data1);
+var yr20242 = {}
 var yr20232 = {}
 var yr20222 = {}
 var yr20212 = {}
@@ -14,6 +15,10 @@ var yr20122 = {}
 var yr20112 = {}
 var data=[]
 var data1=[]
+
+function year20242(sale) {
+        return sale.year == '2024';
+      }
 function year20232(sale) {
         return sale.year == '2023';
       }
@@ -65,11 +70,15 @@ var loc =0
 function inittwo(){
 
         //console.log(yr2019)
-
+        var trace13={x:yr20242.map(row=>row.month),
+                y:yr20242.map(row=>row.NetRecd),
+                name:"2024",
+                 type:"scatter"
+      } 
         var trace12={x:yr20232.map(row=>row.month),
                 y:yr20232.map(row=>row.NetRecd),
                 name:"2023",
-                 type:"scatter"
+                 type:"bar"
       }    
 
         var trace11={x:yr20222.map(row=>row.month),
@@ -135,7 +144,7 @@ var trace10={x: yr20112.map(row=>row.month),
         name:"2011",
         type:"scatter"
 }            
-        var data=[trace,trace1,trace2,trace3,trace4,trace5,trace6,trace7,trace8,trace9,trace10,trace11,trace12]
+        var data=[trace,trace1,trace2,trace3,trace4,trace5,trace6,trace7,trace8,trace9,trace10,trace11,trace12,trace13]
 
          var layout ={
                 title:"Monthly Sales Net Received",
@@ -167,6 +176,11 @@ function getData2(dataset){
         case "All":
          init()
          break;
+         case "2024":
+         x=yr20242.map(row=>row.month),
+         y=yr20242.map(row=>row.NetRecd)
+         loc=13
+         break;   
 
          case "2023":
          x=yr20232.map(row=>row.month),
@@ -252,7 +266,7 @@ function getData2(dataset){
 function updatePlotlytwo(newx,newy,loc){
         inittwo()
         arrtrc=[]
-        origarrtrc=[0,1,2,3,4,5,6,7,8,9,10,11,12]
+        origarrtrc=[0,1,2,3,4,5,6,7,8,9,10,11,12,13]
         for(i=0;i<origarrtrc.length;i++){
                 if(origarrtrc[i] != loc){arrtrc.push(origarrtrc[i])}
         }
@@ -270,6 +284,7 @@ urlstring='http://127.0.0.1:5000/readSales'
 d3.json(urlstring).then(function(sample_m) {
         data1=sample_m
         data=data1
+        yr20242 = data1.filter(year20242)
         yr20232 = data1.filter(year20232) 
         yr20222 = data1.filter(year20222)       
         yr20212 = data1.filter(year20212)

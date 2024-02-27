@@ -140,7 +140,7 @@ function buildCharts(sample) {
         marker: { 
           color: airtop10cost,
           opacity: [1,0.8, 0.6],
-          size: airtop10cost.map(element=>((element>1000) ? element/100 : element/5))
+          size: airtop10cost.map(element=>((element>1000) ? element/100 : element/5))  //count greater than 1000 then divide the value by 100 to keep radius small
         }
       };
       
@@ -148,7 +148,7 @@ function buildCharts(sample) {
       
       var layout1 = {
         scattermode: 'group',
-        title: 'Top 20 airlines and Value In collection',
+        title: 'Top 40 airlines and Value In collection',
         xaxis: {title: 'Airlines'},
         yaxis: {title: '$ Amount'},
         showlegend: true,

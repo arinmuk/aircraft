@@ -8,7 +8,7 @@ import pymssql
 import pymongo
 import csv
 import json
-from config import cloudM,cloudMpassword,sqluser,sqlpass,servername
+from config import cloudM,cloudMpassword,sqluser,sqlpass,servername,elasticuname,elasticpwd
 from pymongo import MongoClient
 from flask import Flask, jsonify, render_template
 from elasticsearch import Elasticsearch
@@ -22,8 +22,10 @@ cloudMClnt=MongoClient()
 cloudMClnt=MongoClient("mongodb+srv://"+ cloudM + ":"
                        + cloudMpassword + "@cluster0-omshy.mongodb.net/test?retryWrites=true&w=majority")
 
-
-es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+print(elasticuname, elasticpwd)
+es = Elasticsearch([{'host': 'localhost', 'port': 9200}],    
+    http_auth=(elasticuname, elasticpwd)
+)
 es
 
 from sqlalchemy import create_engine, MetaData, Table, select
@@ -160,9 +162,9 @@ def mongoR_I(exportdf,msdf,soldf,airsc_cntdf,airsc_costdf):
 
 ###Update local elastic data cache
 def elastic_update(exportdf,msdf,solddf):
-    es.indices.delete(index='aircraft')
-    es.indices.delete(index='aircraft_sales')
-    es.indices.delete(index='solddetails')
+    #es.indices.delete(index='aircraft')
+    #es.indices.delete(index='aircraft_sales')
+    #es.indices.delete(index='solddetails')
     es.indices.create(index='aircraft', ignore=400)
     es.indices.create(index='aircraft_sales', ignore=400)
     es.indices.create(index='solddetails', ignore=400)
